@@ -7,14 +7,62 @@ import { ProductDetails } from "@/components/ProductDetails";
 import { VariantSelector } from "@/components/VariantSelector";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, Play, Volume2 } from "lucide-react";
+import { ArrowRight, Play, Pause, Volume2, VolumeX } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
+  // Audio controls state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [volume, setVolume] = useState(50);
+  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  // Initialize audio
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume / 100;
+    }
+  }, [volume]);
+
+  // Handle play/pause
+  const togglePlayPause = async () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause();
+      } else {
+        try {
+          await audioRef.current.play();
+        } catch (error) {
+          console.log("Audio play failed:", error);
+        }
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
+  // Handle volume change
+  const handleVolumeChange = (newVolume: number) => {
+    setVolume(newVolume);
+    if (audioRef.current) {
+      audioRef.current.volume = newVolume / 100;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white">
+      {/* Hidden audio element */}
+      <audio
+        ref={audioRef}
+        src="/audio/audio-xm5.mp3"
+        loop
+        preload="metadata"
+        onEnded={() => setIsPlaying(false)}
+        onPause={() => setIsPlaying(false)}
+        onPlay={() => setIsPlaying(true)}
+      />
       <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.div
@@ -104,42 +152,94 @@ export default function Home() {
             <div className="relative bg-black/30 backdrop-blur-sm rounded-3xl p-4 md:p-8 border border-white/10 h-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
               <ProductViewer className="w-full h-full" />
 
-              <div className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 flex gap-3">
+              <div className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3">
                 <Button
                   size="sm"
                   variant="secondary"
-                  className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
+                  onClick={togglePlayPause}
+                  className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm transition-all duration-200"
                 >
-                  <Play className="w-4 h-4" />
+                  {isPlaying ? (
+                    <Pause className="w-4 h-4" />
+                  ) : (
+                    <Play className="w-4 h-4" />
+                  )}
                 </Button>
-                <Button
-                  size="sm"
-                  variant="secondary"
-                  className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
-                >
-                  <Volume2 className="w-4 h-4" />
-                </Button>
+
+                <div className="relative">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onMouseEnter={() => setShowVolumeSlider(true)}
+                    onMouseLeave={() => setShowVolumeSlider(false)}
+                    className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm transition-all duration-200"
+                  >
+                    {volume === 0 ? (
+                      <VolumeX className="w-4 h-4" />
+                    ) : (
+                      <Volume2 className="w-4 h-4" />
+                    )}
+                  </Button>
+
+                  {showVolumeSlider && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.8 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-xl border border-white/20 rounded-lg p-3 min-w-[120px]"
+                      onMouseEnter={() => setShowVolumeSlider(true)}
+                      onMouseLeave={() => setShowVolumeSlider(false)}
+                    >
+                      <div className="flex flex-col items-center gap-2">
+                        <span className="text-xs text-white/70">Volume</span>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={volume}
+                          onChange={(e) =>
+                            handleVolumeChange(Number(e.target.value))
+                          }
+                          className="w-full h-1 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
+                          style={{
+                            background: `linear-gradient(to right, #fff 0%, #fff ${volume}%, rgba(255,255,255,0.2) ${volume}%, rgba(255,255,255,0.2) 100%)`,
+                          }}
+                        />
+                        <span className="text-xs text-white/50">{volume}%</span>
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
         </motion.div>
 
-        <div className="mt-10 flex flex-wrap justify-center gap-3 z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
+          className="mt-10 flex flex-wrap justify-center gap-3 z-10"
+        >
           {[
             "Multi‑Noise Sensor",
             "V1 + QN1 Processors",
             "30‑mm Driver",
             "Hi‑Res / LDAC",
             "DSEE Extreme",
-          ].map((chip) => (
-            <span
+          ].map((chip, index) => (
+            <motion.span
               key={chip}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, delay: 1.4 + index * 0.1 }}
               className="px-3 py-1 rounded-full text-xs bg-white/5 border border-white/10 text-white/70"
             >
               {chip}
-            </span>
+            </motion.span>
           ))}
-        </div>
+        </motion.div>
       </section>
 
       <section
@@ -229,26 +329,58 @@ export default function Home() {
         className="min-h-screen bg-black flex items-center"
       >
         <div className="max-w-6xl mx-auto px-6 w-full">
-          <div className="text-center space-y-4">
-            <p className="text-orange-500">Technology</p>
-            <h2 className="text-5xl md:text-7xl font-light tracking-tight">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center space-y-4"
+          >
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-orange-500"
+            >
+              Technology
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-7xl font-light tracking-tight"
+            >
               Multi‑Noise Sensor technology.
-            </h2>
-            <p className="text-white/70 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="text-white/70 max-w-3xl mx-auto"
+            >
               Four microphones on each earcup capture ambient sound with higher
               precision to dramatically reduce high‑frequency noise. Auto NC
               Optimizer continuously tunes performance based on wearing
               conditions and atmospheric pressure.
-            </p>
-          </div>
-          <div className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+            </motion.p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+            className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center"
+          >
             <Image
               src="/images/Components 1.png"
               alt="Multi‑Noise Sensor technology"
               fill
               className="object-contain p-8 md:p-10"
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -257,25 +389,57 @@ export default function Home() {
         className="min-h-screen bg-black flex items-center"
       >
         <div className="max-w-6xl mx-auto px-6 w-full">
-          <div className="text-center space-y-4">
-            <p className="text-orange-500">Processors</p>
-            <h2 className="text-5xl md:text-7xl font-light tracking-tight">
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center space-y-4"
+          >
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+              className="text-orange-500"
+            >
+              Processors
+            </motion.p>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              viewport={{ once: true }}
+              className="text-5xl md:text-7xl font-light tracking-tight"
+            >
               Incomparable noise canceling.
-            </h2>
-            <p className="text-white/70 max-w-3xl mx-auto">
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              viewport={{ once: true }}
+              className="text-white/70 max-w-3xl mx-auto"
+            >
               The Integrated Processor V1 unlocks the full potential of our HD
               Noise Canceling Processor QN1. Together they control eight
               microphones for unprecedented noise‑canceling quality.
-            </p>
-          </div>
-          <div className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+            </motion.p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.5 }}
+            viewport={{ once: true }}
+            className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center"
+          >
             <Image
               src="/images/processor.png"
               alt="Integrated Processor V1 and QN1"
               fill
               className="object-contain p-8 md:p-10"
             />
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -348,7 +512,7 @@ export default function Home() {
               time, restoring high‑range detail lost during compression.
             </p>
           </div>
-          <div className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center">
+          <div className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white flex items-center justify-center">
             <Image
               src="/images/DSEE.png"
               alt="DSEE Extreme"
