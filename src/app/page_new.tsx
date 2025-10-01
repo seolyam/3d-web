@@ -18,7 +18,7 @@ export default function Home() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const volumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const heroSectionRef = useRef<HTMLDivElement>(null);
+  const heroSectionRef = useRef<HTMLElement>(null);
   const [scrollDistance, setScrollDistance] = useState(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
@@ -58,6 +58,7 @@ export default function Home() {
     }
   }, []);
 
+  // Track how far we've scrolled from the top
   useEffect(() => {
     const updateScrollDistance = () => {
       if (heroSectionRef.current) {
@@ -198,7 +199,7 @@ export default function Home() {
         </div>
       </header>
 
-      <nav className="sticky-nav fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
+      <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
         {[
           { id: "hero", label: "Top" },
           { id: "variants", label: "Style" },
@@ -209,7 +210,7 @@ export default function Home() {
           <a
             key={item.id}
             href={`#${item.id}`}
-            className="sticky-nav-item px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20"
+            className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/70 hover:text-white hover:bg-white/10 transition"
             aria-label={`Jump to ${item.label}`}
           >
             {item.label}
@@ -217,19 +218,17 @@ export default function Home() {
         ))}
       </nav>
 
-      <div ref={heroSectionRef}>
-        <Hero
-          audioRef={audioRef}
-          isPlaying={isPlaying}
-          volume={volume}
-          showVolumeSlider={showVolumeSlider}
-          distanceRatio={distanceRatio}
-          onTogglePlayPause={togglePlayPause}
-          onVolumeMouseEnter={handleVolumeMouseEnter}
-          onVolumeMouseLeave={handleVolumeMouseLeave}
-          onVolumeChange={handleVolumeChange}
-        />
-      </div>
+      <Hero
+        audioRef={audioRef}
+        isPlaying={isPlaying}
+        volume={volume}
+        showVolumeSlider={showVolumeSlider}
+        distanceRatio={distanceRatio}
+        onTogglePlayPause={togglePlayPause}
+        onVolumeMouseEnter={handleVolumeMouseEnter}
+        onVolumeMouseLeave={handleVolumeMouseLeave}
+        onVolumeChange={handleVolumeChange}
+      />
 
       <Variants />
 
