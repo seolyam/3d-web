@@ -20,12 +20,84 @@ export default function Home() {
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Initialize audio
+  // Calculate distance-based audio effects
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const [scrollDistance, setScrollDistance] = useState(0);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const pannerNodeRef = useRef<StereoPannerNode | null>(null);
+
+  // Initialize Web Audio API
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume / 100;
+    if (audioRef.current && !audioContextRef.current) {
+      try {
+        audioContextRef.current = new (window.AudioContext ||
+          (window as any).webkitAudioContext)();
+        const source = audioContextRef.current.createMediaElementSource(
+          audioRef.current
+        );
+        gainNodeRef.current = audioContextRef.current.createGain();
+        pannerNodeRef.current = audioContextRef.current.createStereoPanner();
+
+        source.connect(gainNodeRef.current);
+        gainNodeRef.current.connect(pannerNodeRef.current);
+        pannerNodeRef.current.connect(audioContextRef.current.destination);
+      } catch (error) {
+        console.log(
+          "Web Audio API not supported, falling back to basic controls"
+        );
+      }
     }
-  }, [volume]);
+  }, []);
+
+  // Track scroll distance from hero section
+  useEffect(() => {
+    const updateScrollDistance = () => {
+      if (heroSectionRef.current) {
+        const heroRect = heroSectionRef.current.getBoundingClientRect();
+        // Distance is 0 when at the top (3D model), increases as you scroll down
+        const distance = Math.max(0, window.scrollY);
+        setScrollDistance(distance);
+      }
+    };
+
+    window.addEventListener("scroll", updateScrollDistance);
+    updateScrollDistance(); // Initial calculation
+
+    return () => window.removeEventListener("scroll", updateScrollDistance);
+  }, []);
+
+  // Calculate audio effects based on scroll distance
+  const maxDistance = 2000; // Maximum distance for full effect
+  const distanceRatio = Math.min(scrollDistance / maxDistance, 1);
+
+  // Volume decreases as distance increases (exponential decay for more realistic effect)
+  const distanceVolume = Math.max(0.05, Math.pow(1 - distanceRatio, 2));
+
+  // Pan effect - audio moves to one side as you scroll down
+  const panValue = distanceRatio * 0.8; // Linear panning from center (0) to right (0.8)
+
+  // High-frequency rolloff for distance effect
+  const highFreqRolloff = 1 - distanceRatio * 0.6;
+
+  // Apply distance-based audio effects
+  useEffect(() => {
+    if (gainNodeRef.current && pannerNodeRef.current) {
+      const baseVolume = (volume / 100) * distanceVolume;
+      gainNodeRef.current.gain.setValueAtTime(
+        baseVolume,
+        audioContextRef.current?.currentTime || 0
+      );
+      pannerNodeRef.current.pan.setValueAtTime(
+        panValue,
+        audioContextRef.current?.currentTime || 0
+      );
+    } else if (audioRef.current) {
+      // Fallback for browsers without Web Audio API
+      const baseVolume = (volume / 100) * distanceVolume;
+      audioRef.current.volume = baseVolume;
+    }
+  }, [volume, distanceVolume, panValue]);
 
   // Handle play/pause
   const togglePlayPause = async () => {
@@ -113,6 +185,7 @@ export default function Home() {
       </nav>
 
       <section
+        ref={heroSectionRef}
         id="hero"
         className="relative min-h-screen flex flex-col items-center justify-center pt-20"
       >
@@ -149,8 +222,31 @@ export default function Home() {
           <div className="aspect-square relative">
             <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-3xl scale-110" />
 
-            <div className="relative bg-black/30 backdrop-blur-sm rounded-3xl p-4 md:p-8 border border-white/10 h-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
+            <motion.div
+              className="relative bg-black/30 backdrop-blur-sm rounded-3xl p-4 md:p-8 border border-white/10 h-full shadow-[0_0_0_1px_rgba(255,255,255,0.06)]"
+              style={{
+                filter: `blur(${distanceRatio * 2}px) brightness(${
+                  1 - distanceRatio * 0.3
+                })`,
+                transform: `scale(${1 - distanceRatio * 0.05})`,
+              }}
+            >
               <ProductViewer className="w-full h-full" />
+
+              {/* Distance indicator */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: distanceRatio > 0.1 ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute top-4 right-4 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-white/20"
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-white/50" />
+                  <span className="text-xs text-white/70">
+                    {Math.round(distanceRatio * 100)}% away
+                  </span>
+                </div>
+              </motion.div>
 
               <div className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 flex items-center gap-3">
                 <Button
@@ -212,7 +308,7 @@ export default function Home() {
                   )}
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
 
