@@ -18,6 +18,7 @@ export default function Home() {
   const [volume, setVolume] = useState(50);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const volumeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const heroSectionRef = useRef<HTMLElement>(null);
   const [scrollDistance, setScrollDistance] = useState(0);
@@ -134,6 +135,27 @@ export default function Home() {
       audioRef.current.volume = newVolume / 100;
     }
   };
+
+  const handleVolumeMouseEnter = () => {
+    if (volumeTimeoutRef.current) {
+      clearTimeout(volumeTimeoutRef.current);
+    }
+    setShowVolumeSlider(true);
+  };
+
+  const handleVolumeMouseLeave = () => {
+    volumeTimeoutRef.current = setTimeout(() => {
+      setShowVolumeSlider(false);
+    }, 1000);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (volumeTimeoutRef.current) {
+        clearTimeout(volumeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -277,8 +299,8 @@ export default function Home() {
                   <Button
                     size="sm"
                     variant="secondary"
-                    onMouseEnter={() => setShowVolumeSlider(true)}
-                    onMouseLeave={() => setShowVolumeSlider(false)}
+                    onMouseEnter={handleVolumeMouseEnter}
+                    onMouseLeave={handleVolumeMouseLeave}
                     className="rounded-full bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm transition-all duration-200"
                   >
                     {volume === 0 ? (
@@ -295,8 +317,8 @@ export default function Home() {
                       exit={{ opacity: 0, scale: 0.8 }}
                       transition={{ duration: 0.2 }}
                       className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-xl border border-white/20 rounded-lg p-3 min-w-[120px]"
-                      onMouseEnter={() => setShowVolumeSlider(true)}
-                      onMouseLeave={() => setShowVolumeSlider(false)}
+                      onMouseEnter={handleVolumeMouseEnter}
+                      onMouseLeave={handleVolumeMouseLeave}
                     >
                       <div className="flex flex-col items-center gap-2">
                         <span className="text-xs text-white/70">Volume</span>
