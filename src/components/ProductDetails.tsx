@@ -144,14 +144,14 @@ export function ProductDetails() {
           className="flex-1 bg-white text-black hover:bg-white/90"
         >
           <ShoppingCart className="w-4 h-4 mr-2" />
-          Notify Me
+          Add to Cart
         </Button>
         <Button
           size="lg"
           variant="outline"
           className="flex-1 border-white/30 text-white hover:bg-white/10"
         >
-          Learn More
+          Try in Store
         </Button>
       </motion.div>
     </div>
