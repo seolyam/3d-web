@@ -2,11 +2,7 @@
 
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Environment,
-  PresentationControls,
-} from "@react-three/drei";
+import { OrbitControls, Environment, Center, Html } from "@react-three/drei";
 import {
   EffectComposer,
   Bloom,
@@ -63,26 +59,22 @@ function Scene() {
 
       <Environment preset="studio" environmentIntensity={0.8} />
 
-      <PresentationControls
-        global
-        rotation={[0.13, 0.1, 0]}
-        polar={[-0.4, 0.2]}
-        azimuth={[-1, 0.75]}
-        config={{ mass: 2, tension: 400 }}
-        snap={{ mass: 4, tension: 400 }}
-      >
+      <Center>
         <ProductModel />
-      </PresentationControls>
+      </Center>
 
       <OrbitControls
+        makeDefault
+        target={[0, 0, 0]}
         enablePan={false}
-        enableZoom={true}
-        enableRotate={true}
-        minDistance={2.5}
-        maxDistance={6}
+        enableZoom={false}
+        enableRotate
+        minDistance={3}
+        maxDistance={3}
         minPolarAngle={Math.PI / 6}
-        maxPolarAngle={Math.PI - Math.PI / 6}
-        dampingFactor={0.05}
+        maxPolarAngle={(5 * Math.PI) / 6}
+        rotateSpeed={0.9}
+        dampingFactor={0.08}
         enableDamping
         autoRotate={false}
       />
@@ -111,31 +103,32 @@ function Scene() {
   );
 }
 
+function CanvasLoader() {
+  return (
+    <Html center>
+      <Loader />
+    </Html>
+  );
+}
+
 export function ProductViewer({ className }: ProductViewerProps) {
   return (
     <div className={`relative w-full h-full ${className}`}>
       <Canvas
-        camera={{ position: [0, 0, 3.5], fov: 50 }}
+        camera={{ position: [0, 0, 3], fov: 50 }}
         gl={{
           antialias: true,
           alpha: true,
           powerPreference: "high-performance",
-          antialias: true,
         }}
         shadows
         className="bg-transparent"
         dpr={[1, 2]}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={<CanvasLoader />}>
           <Scene />
         </Suspense>
       </Canvas>
-
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <Suspense fallback={<Loader />}>
-          <div className="opacity-0" />
-        </Suspense>
-      </div>
     </div>
   );
 }
