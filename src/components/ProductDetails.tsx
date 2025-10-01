@@ -148,8 +148,7 @@ export function ProductDetails() {
         </Button>
         <Button
           size="lg"
-          variant="outline"
-          className="flex-1 border-white/30 text-white hover:bg-white/10"
+          className="flex-1 bg-white text-black hover:bg-white/90"
         >
           Try in Store
         </Button>
