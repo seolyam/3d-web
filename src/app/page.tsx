@@ -64,9 +64,9 @@ export default function Home() {
     return () => window.removeEventListener("scroll", updateScrollDistance);
   }, []);
 
-  const maxDistance = 2000;
+  const maxDistance = 3000;
   const distanceRatio = Math.min(scrollDistance / maxDistance, 1);
-  const distanceVolume = Math.max(0.05, Math.pow(1 - distanceRatio, 2));
+  const distanceVolume = Math.max(0.15, Math.pow(1 - distanceRatio, 1.5));
   const panValue = distanceRatio * 0.8;
 
   // Make audio quieter and more distant as you scroll down
