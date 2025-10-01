@@ -14,25 +14,24 @@ export default function Home() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
-  // Audio controls state
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
-  // Calculate distance-based audio effects
   const heroSectionRef = useRef<HTMLElement>(null);
   const [scrollDistance, setScrollDistance] = useState(0);
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const pannerNodeRef = useRef<StereoPannerNode | null>(null);
 
-  // Initialize Web Audio API
+  // Set up audio processing for distance effects
   useEffect(() => {
     if (audioRef.current && !audioContextRef.current) {
       try {
         audioContextRef.current = new (window.AudioContext ||
-          (window as any).webkitAudioContext)();
+          (window as unknown as { webkitAudioContext: typeof AudioContext })
+            .webkitAudioContext)();
         const source = audioContextRef.current.createMediaElementSource(
           audioRef.current
         );
@@ -42,7 +41,7 @@ export default function Home() {
         source.connect(gainNodeRef.current);
         gainNodeRef.current.connect(pannerNodeRef.current);
         pannerNodeRef.current.connect(audioContextRef.current.destination);
-      } catch (error) {
+      } catch {
         console.log(
           "Web Audio API not supported, falling back to basic controls"
         );
@@ -50,37 +49,27 @@ export default function Home() {
     }
   }, []);
 
-  // Track scroll distance from hero section
+  // Track how far we've scrolled from the top
   useEffect(() => {
     const updateScrollDistance = () => {
       if (heroSectionRef.current) {
-        const heroRect = heroSectionRef.current.getBoundingClientRect();
-        // Distance is 0 when at the top (3D model), increases as you scroll down
         const distance = Math.max(0, window.scrollY);
         setScrollDistance(distance);
       }
     };
 
     window.addEventListener("scroll", updateScrollDistance);
-    updateScrollDistance(); // Initial calculation
+    updateScrollDistance();
 
     return () => window.removeEventListener("scroll", updateScrollDistance);
   }, []);
 
-  // Calculate audio effects based on scroll distance
-  const maxDistance = 2000; // Maximum distance for full effect
+  const maxDistance = 2000;
   const distanceRatio = Math.min(scrollDistance / maxDistance, 1);
-
-  // Volume decreases as distance increases (exponential decay for more realistic effect)
   const distanceVolume = Math.max(0.05, Math.pow(1 - distanceRatio, 2));
+  const panValue = distanceRatio * 0.8;
 
-  // Pan effect - audio moves to one side as you scroll down
-  const panValue = distanceRatio * 0.8; // Linear panning from center (0) to right (0.8)
-
-  // High-frequency rolloff for distance effect
-  const highFreqRolloff = 1 - distanceRatio * 0.6;
-
-  // Apply distance-based audio effects
+  // Make audio quieter and more distant as you scroll down
   useEffect(() => {
     if (gainNodeRef.current && pannerNodeRef.current) {
       const baseVolume = (volume / 100) * distanceVolume;
@@ -93,13 +82,11 @@ export default function Home() {
         audioContextRef.current?.currentTime || 0
       );
     } else if (audioRef.current) {
-      // Fallback for browsers without Web Audio API
       const baseVolume = (volume / 100) * distanceVolume;
       audioRef.current.volume = baseVolume;
     }
   }, [volume, distanceVolume, panValue]);
 
-  // Handle play/pause
   const togglePlayPause = async () => {
     if (audioRef.current) {
       if (isPlaying) {
@@ -115,7 +102,6 @@ export default function Home() {
     }
   };
 
-  // Handle volume change
   const handleVolumeChange = (newVolume: number) => {
     setVolume(newVolume);
     if (audioRef.current) {
@@ -125,7 +111,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Hidden audio element */}
       <audio
         ref={audioRef}
         src="/audio/audio-xm5.mp3"
@@ -164,7 +149,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Floating in-page nav */}
       <nav className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
         {[
           { id: "hero", label: "Top" },
@@ -233,7 +217,6 @@ export default function Home() {
             >
               <ProductViewer className="w-full h-full" />
 
-              {/* Distance indicator */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: distanceRatio > 0.1 ? 1 : 0 }}
@@ -419,7 +402,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* One-feature-per-page sections */}
       <section
         id="feature-sensors"
         className="min-h-screen bg-black flex items-center"
@@ -715,7 +697,6 @@ export default function Home() {
           <p>&copy; 2025 Audionix. All rights reserved.</p>
         </div>
       </footer>
-      {/* Back to top */}
       <a
         href="#hero"
         className="fixed bottom-6 right-6 z-40 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white backdrop-blur hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"

@@ -21,7 +21,6 @@ interface ProductViewerProps {
 
 function Scene() {
   const lightRef = useRef<THREE.DirectionalLight>(null);
-  const { selectedVariant } = useProductStore();
   const isMobile = useMemo(() => {
     if (typeof window === "undefined") return false;
     return window.matchMedia("(max-width: 768px)").matches;
