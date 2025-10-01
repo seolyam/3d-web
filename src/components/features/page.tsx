@@ -128,7 +128,9 @@ export function Features() {
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, delay: 0.5 }}
               viewport={{ once: true }}
-              className="relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center"
+              className={`relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center ${
+                section.id === "feature-dsee" ? "bg-white" : "bg-black/20"
+              }`}
             >
               <Image
                 src={section.imageSrc}
