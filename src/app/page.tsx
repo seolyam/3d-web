@@ -41,6 +41,16 @@ export default function Home() {
         source.connect(gainNodeRef.current);
         gainNodeRef.current.connect(pannerNodeRef.current);
         pannerNodeRef.current.connect(audioContextRef.current.destination);
+
+        if (audioContextRef.current.state === "suspended") {
+          const resumeAudio = () => {
+            if (audioContextRef.current) {
+              audioContextRef.current.resume();
+            }
+          };
+          document.addEventListener("touchstart", resumeAudio, { once: true });
+          document.addEventListener("click", resumeAudio, { once: true });
+        }
       } catch {
         console.log(
           "Web Audio API not supported, falling back to basic controls"
@@ -49,7 +59,6 @@ export default function Home() {
     }
   }, []);
 
-  // Track how far we've scrolled from the top
   useEffect(() => {
     const updateScrollDistance = () => {
       if (heroSectionRef.current) {
@@ -69,7 +78,6 @@ export default function Home() {
   const distanceVolume = Math.max(0.15, Math.pow(1 - distanceRatio, 1.5));
   const panValue = distanceRatio * 0.8;
 
-  // Make audio quieter and more distant as you scroll down
   useEffect(() => {
     if (gainNodeRef.current && pannerNodeRef.current) {
       const baseVolume = (volume / 100) * distanceVolume;
@@ -91,14 +99,32 @@ export default function Home() {
     if (audioRef.current) {
       if (isPlaying) {
         audioRef.current.pause();
+        setIsPlaying(false);
       } else {
         try {
+          if (
+            audioContextRef.current &&
+            audioContextRef.current.state === "suspended"
+          ) {
+            await audioContextRef.current.resume();
+          }
+
           await audioRef.current.play();
+          setIsPlaying(true);
         } catch (error) {
           console.log("Audio play failed:", error);
+
+          if (audioRef.current) {
+            audioRef.current.load();
+            try {
+              await audioRef.current.play();
+              setIsPlaying(true);
+            } catch (fallbackError) {
+              console.log("Fallback audio play failed:", fallbackError);
+            }
+          }
         }
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -115,7 +141,9 @@ export default function Home() {
         ref={audioRef}
         src="/audio/audio-xm5.mp3"
         loop
-        preload="metadata"
+        preload="auto"
+        playsInline
+        webkit-playsinline="true"
         onEnded={() => setIsPlaying(false)}
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
