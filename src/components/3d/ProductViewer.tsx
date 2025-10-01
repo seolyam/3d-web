@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useRef } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Environment, Center, Html } from "@react-three/drei";
 import {
@@ -22,6 +22,10 @@ interface ProductViewerProps {
 function Scene() {
   const lightRef = useRef<THREE.DirectionalLight>(null);
   const { selectedVariant } = useProductStore();
+  const isMobile = useMemo(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(max-width: 768px)").matches;
+  }, []);
 
   useFrame((state) => {
     if (lightRef.current) {
@@ -57,7 +61,10 @@ function Scene() {
       <pointLight position={[0, 3, 0]} intensity={0.5} color="#f59e0b" />
       <pointLight position={[0, -3, 0]} intensity={0.3} color="#8b5cf6" />
 
-      <Environment preset="studio" environmentIntensity={0.8} />
+      <Environment
+        preset="studio"
+        environmentIntensity={isMobile ? 0.6 : 0.8}
+      />
 
       <Center>
         <ProductModel />
@@ -79,7 +86,7 @@ function Scene() {
         autoRotate={false}
       />
 
-      <EffectComposer>
+      <EffectComposer enabled={!isMobile}>
         <Bloom
           intensity={0.5}
           luminanceThreshold={0.9}
