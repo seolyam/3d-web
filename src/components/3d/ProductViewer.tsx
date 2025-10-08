@@ -82,7 +82,8 @@ function Scene() {
         rotateSpeed={0.9}
         dampingFactor={0.08}
         enableDamping
-        autoRotate={false}
+        autoRotate={true}
+        autoRotateSpeed={2}
       />
 
       <EffectComposer enabled={!isMobile}>
