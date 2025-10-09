@@ -4,17 +4,22 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
+import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export function Lifestyle() {
+  const { ref: leftRef, isInView: leftInView } = useRepeatingScrollAnimation();
+  const { ref: rightRef, isInView: rightInView } =
+    useRepeatingScrollAnimation();
+
   return (
     <section id="lifestyle" className="min-h-screen bg-black flex items-center">
       <div className="max-w-6xl mx-auto px-6 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <motion.div
+            ref={leftRef}
             initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            animate={leftInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -50 }}
             transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
             className="space-y-8"
           >
             <div className="space-y-4">
@@ -47,10 +52,10 @@ export function Lifestyle() {
           </motion.div>
 
           <motion.div
+            ref={rightRef}
             initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            animate={rightInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 50 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            viewport={{ once: true }}
             className="relative"
           >
             <div className="relative aspect-[4/5] rounded-3xl overflow-hidden">

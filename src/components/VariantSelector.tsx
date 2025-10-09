@@ -30,8 +30,8 @@ export function VariantSelector() {
               onClick={() => setSelectedVariant(variant.id)}
               className={`flex flex-col items-center p-6 h-auto min-w-[180px] rounded-2xl ${
                 selectedVariant === variant.id
-                  ? "bg-white text-black hover:bg-white/90 shadow-[0_0_0_1px_rgba(0,0,0,0.08)]"
-                  : "border-white/30 text-white hover:bg-white/10 bg-white/5"
+                  ? "bg-white text-black hover:bg-white/90 hover:text-black shadow-[0_0_0_1px_rgba(0,0,0,0.08)]"
+                  : "border-white/30 text-white hover:bg-white/10 hover:text-white bg-white/5"
               }`}
             >
               <div

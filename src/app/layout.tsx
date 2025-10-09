@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "WH‑1000XM5 — Premium Noise Canceling Headphones | 3D Showcase",
+  title: "Audionix: XM5 — Premium Noise Canceling Headphones | 3D Showcase",
   description:
     "Explore Sony WH‑1000XM5 in an immersive 3D showcase. Advanced noise canceling, Hi‑Res Audio with LDAC, DSEE Extreme, and all‑day comfort.",
   keywords: [
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
     "3D",
   ],
   openGraph: {
-    title: "WH‑1000XM5 — Premium Noise Canceling Headphones",
+    title: "Audionix: XM5 — Premium Noise Canceling Headphones",
     description:
       "Explore Sony WH‑1000XM5 in an immersive 3D showcase. Advanced noise canceling, Hi‑Res Audio with LDAC, DSEE Extreme, and all‑day comfort.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "WH‑1000XM5 — Premium Noise Canceling Headphones",
+    title: "Audionix: XM5 — Premium Noise Canceling Headphones",
     description:
       "Explore Sony WH‑1000XM5 in an immersive 3D showcase. Advanced noise canceling, Hi‑Res Audio with LDAC, DSEE Extreme, and all‑day comfort.",
   },

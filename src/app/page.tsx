@@ -23,6 +23,7 @@ export default function Home() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const pannerNodeRef = useRef<StereoPannerNode | null>(null);
+  const analyzerNodeRef = useRef<AnalyserNode | null>(null);
 
   // Set up audio processing for distance effects
   useEffect(() => {
@@ -36,9 +37,13 @@ export default function Home() {
         );
         gainNodeRef.current = audioContextRef.current.createGain();
         pannerNodeRef.current = audioContextRef.current.createStereoPanner();
+        analyzerNodeRef.current = audioContextRef.current.createAnalyser();
+        analyzerNodeRef.current.fftSize = 512;
+        analyzerNodeRef.current.smoothingTimeConstant = 0.8;
 
         source.connect(gainNodeRef.current);
-        gainNodeRef.current.connect(pannerNodeRef.current);
+        gainNodeRef.current.connect(analyzerNodeRef.current);
+        analyzerNodeRef.current.connect(pannerNodeRef.current);
         pannerNodeRef.current.connect(audioContextRef.current.destination);
 
         if (audioContextRef.current.state === "suspended") {
@@ -169,12 +174,18 @@ export default function Home() {
         onPause={() => setIsPlaying(false)}
         onPlay={() => setIsPlaying(true)}
       />
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10">
+      <motion.header
+        className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10"
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+      >
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
+            whileHover={{ scale: 1.05 }}
           >
             <h1 className="text-2xl font-medium tracking-tight">Audionix</h1>
           </motion.div>
@@ -185,37 +196,81 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="flex items-center gap-8"
           >
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              Products
-            </Button>
-            <Button variant="ghost" className="text-white hover:bg-white/10">
-              Support
-            </Button>
-            <Button className="bg-white text-black hover:bg-white/90">
-              Shop Now
-            </Button>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/10 hover:text-white"
+              >
+                Products
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="ghost"
+                className="text-white hover:bg-white/10 hover:text-white"
+              >
+                Support
+              </Button>
+            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              animate={{
+                boxShadow: [
+                  "0 0 0 0 rgba(255, 255, 255, 0)",
+                  "0 0 20px rgba(255, 255, 255, 0.1)",
+                  "0 0 0 0 rgba(255, 255, 255, 0)",
+                ],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              <Button className="bg-white text-black hover:bg-white/90">
+                Shop Now
+              </Button>
+            </motion.div>
           </motion.div>
         </div>
-      </header>
+      </motion.header>
 
-      <nav className="sticky-nav fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3">
+      <motion.nav
+        className="sticky-nav fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3"
+        initial={{ opacity: 0, x: 50 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8, delay: 0.5 }}
+      >
         {[
           { id: "hero", label: "Top" },
           { id: "variants", label: "Style" },
           { id: "details", label: "Details" },
           { id: "feature-sensors", label: "Tech" },
           { id: "cta", label: "CTA" },
-        ].map((item) => (
-          <a
+        ].map((item, index) => (
+          <motion.a
             key={item.id}
             href={`#${item.id}`}
             className="sticky-nav-item px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/70 hover:text-white hover:bg-white/10 hover:border-white/20"
             aria-label={`Jump to ${item.label}`}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+            whileHover={{
+              scale: 1.1,
+              x: -5,
+              boxShadow: "0 0 20px rgba(255, 255, 255, 0.1)",
+              backgroundColor: "rgba(255, 255, 255, 0.1)",
+              borderColor: "rgba(255, 255, 255, 0.2)",
+              color: "white",
+            }}
+            whileTap={{ scale: 0.95 }}
           >
             {item.label}
-          </a>
+          </motion.a>
         ))}
-      </nav>
+      </motion.nav>
 
       <div ref={heroSectionRef}>
         <Hero
@@ -224,6 +279,7 @@ export default function Home() {
           volume={volume}
           showVolumeSlider={showVolumeSlider}
           distanceRatio={distanceRatio}
+          analyzerNode={analyzerNodeRef.current}
           onTogglePlayPause={togglePlayPause}
           onVolumeMouseEnter={handleVolumeMouseEnter}
           onVolumeMouseLeave={handleVolumeMouseLeave}
@@ -246,13 +302,34 @@ export default function Home() {
           <p>&copy; 2025 Audionix. All rights reserved.</p>
         </div>
       </footer>
-      <a
+      <motion.a
         href="#hero"
         className="fixed bottom-6 right-6 z-40 inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/10 border border-white/20 text-white backdrop-blur hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40"
         aria-label="Back to top"
+        initial={{ opacity: 0, scale: 0 }}
+        animate={{
+          opacity: 1,
+          scale: 1,
+          y: [0, -5, 0],
+        }}
+        transition={{
+          opacity: { duration: 0.5, delay: 1 },
+          scale: { duration: 0.5, delay: 1 },
+          y: {
+            duration: 2,
+            repeat: Infinity,
+            ease: "easeInOut",
+          },
+        }}
+        whileHover={{
+          scale: 1.1,
+          rotate: 360,
+          boxShadow: "0 0 20px rgba(255, 255, 255, 0.2)",
+        }}
+        whileTap={{ scale: 0.9 }}
       >
         ↑
-      </a>
+      </motion.a>
     </div>
   );
 }

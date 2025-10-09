@@ -3,16 +3,19 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export function CTA() {
+  const { ref, isInView } = useRepeatingScrollAnimation();
+
   return (
     <section id="cta" className="py-32 bg-black">
       <div className="max-w-4xl mx-auto px-6">
         <motion.div
+          ref={ref}
           initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
           className="text-center space-y-12 relative"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 via-purple-600/20 to-pink-600/20 rounded-3xl blur-3xl" />

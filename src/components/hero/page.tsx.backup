@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Equalizer } from "@/components/ui/equalizer";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
-import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface HeroProps {
   audioRef: React.RefObject<HTMLAudioElement | null>;
@@ -36,14 +35,6 @@ export function Hero({
 }: HeroProps) {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  
-  // Scroll animation hooks
-  const { ref: badgeRef, isInView: badgeInView } = useRepeatingScrollAnimation();
-  const { ref: titleRef, isInView: titleInView } = useRepeatingScrollAnimation();
-  const { ref: subtitleRef, isInView: subtitleInView } = useRepeatingScrollAnimation();
-  const { ref: descriptionRef, isInView: descriptionInView } = useRepeatingScrollAnimation();
-  const { ref: modelRef, isInView: modelInView } = useRepeatingScrollAnimation();
-  const { ref: equalizerRef, isInView: equalizerInView } = useRepeatingScrollAnimation();
 
   return (
     <section
@@ -59,9 +50,8 @@ export function Hero({
         className="text-center mb-4 z-10"
       >
         <motion.div
-          ref={badgeRef}
           initial={{ opacity: 0, scale: 0.8, y: 10 }}
-          animate={badgeInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <Badge
@@ -79,28 +69,25 @@ export function Hero({
           className="text-3xl md:text-5xl lg:text-6xl font-light tracking-tight leading-tight mb-2"
         >
           <motion.span
-            ref={titleRef}
             initial={{ opacity: 0, x: -20 }}
-            animate={titleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <span className="animated-gradient-text">WH‑1000XM5</span>
+            WH‑1000XM5
           </motion.span>
           <motion.span
-            ref={subtitleRef}
             className="block font-medium"
             initial={{ opacity: 0, x: 20 }}
-            animate={subtitleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
           >
-            <span className="glowing-text">Premium Noise Canceling</span>
+            Premium Noise Canceling
           </motion.span>
         </motion.h1>
 
         <motion.p
-          ref={descriptionRef}
           initial={{ opacity: 0, y: 15 }}
-          animate={descriptionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed"
         >
@@ -110,9 +97,8 @@ export function Hero({
       </motion.div>
 
       <motion.div
-        ref={modelRef}
         initial={{ opacity: 0, scale: 0.8, y: 30 }}
-        animate={modelInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 30 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
         transition={{
           duration: 0.8,
           delay: 0.2,
@@ -269,9 +255,8 @@ export function Hero({
       </motion.div>
 
       <motion.div
-        ref={equalizerRef}
         initial={{ opacity: 0, y: 20, scale: 0.9 }}
-        animate={equalizerInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.9 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{
           duration: 0.7,
           delay: 0.4,

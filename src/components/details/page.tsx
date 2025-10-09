@@ -2,16 +2,19 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 
 export function Details() {
+  const { ref, isInView } = useRepeatingScrollAnimation();
+
   return (
     <section id="details" className="py-32 bg-black">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
+          ref={ref}
           initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
           className="text-center space-y-16"
         >
           <div className="space-y-6">
