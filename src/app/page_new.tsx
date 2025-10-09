@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Hero } from "@/components/hero/page";
 import { Variants } from "@/components/variants/page";
@@ -23,6 +22,7 @@ export default function Home() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const pannerNodeRef = useRef<StereoPannerNode | null>(null);
+  const analyzerNodeRef = useRef<AnalyserNode | null>(null);
 
   // Set up audio processing for distance effects
   useEffect(() => {
@@ -36,9 +36,13 @@ export default function Home() {
         );
         gainNodeRef.current = audioContextRef.current.createGain();
         pannerNodeRef.current = audioContextRef.current.createStereoPanner();
+        analyzerNodeRef.current = audioContextRef.current.createAnalyser();
+        analyzerNodeRef.current.fftSize = 512;
+        analyzerNodeRef.current.smoothingTimeConstant = 0.8;
 
         source.connect(gainNodeRef.current);
-        gainNodeRef.current.connect(pannerNodeRef.current);
+        gainNodeRef.current.connect(analyzerNodeRef.current);
+        analyzerNodeRef.current.connect(pannerNodeRef.current);
         pannerNodeRef.current.connect(audioContextRef.current.destination);
 
         if (audioContextRef.current.state === "suspended") {
@@ -224,6 +228,7 @@ export default function Home() {
         volume={volume}
         showVolumeSlider={showVolumeSlider}
         distanceRatio={distanceRatio}
+        analyzerNode={analyzerNodeRef.current}
         onTogglePlayPause={togglePlayPause}
         onVolumeMouseEnter={handleVolumeMouseEnter}
         onVolumeMouseLeave={handleVolumeMouseLeave}

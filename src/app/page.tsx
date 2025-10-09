@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { Hero } from "@/components/hero/page";
 import { Variants } from "@/components/variants/page";

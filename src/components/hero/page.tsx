@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Equalizer } from "@/components/ui/equalizer";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
 import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 
 interface HeroProps {
@@ -23,7 +22,7 @@ interface HeroProps {
 }
 
 export function Hero({
-  audioRef,
+  audioRef: _audioRef,
   isPlaying,
   volume,
   showVolumeSlider,

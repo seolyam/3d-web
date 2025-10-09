@@ -12,7 +12,6 @@ import {
 } from "@react-three/postprocessing";
 import { ProductModel } from "./ProductModel";
 import { Loader } from "./Loader";
-import { useProductStore } from "@/hooks/useProductStore";
 import * as THREE from "three";
 
 interface ProductViewerProps {

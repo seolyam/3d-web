@@ -10,11 +10,10 @@ interface UseScrollAnimationOptions {
 }
 
 export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
-  const { threshold = 0.1, rootMargin = "0px", triggerOnce = false } = options;
+  const { threshold = 0.1, triggerOnce = false } = options;
   const ref = useRef(null);
   const isInView = useInView(ref, {
-    threshold,
-    rootMargin,
+    amount: threshold,
     once: triggerOnce,
   });
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -35,11 +34,10 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
 export function useRepeatingScrollAnimation(
   options: UseScrollAnimationOptions = {}
 ) {
-  const { threshold = 0.1, rootMargin = "0px" } = options;
+  const { threshold = 0.1 } = options;
   const ref = useRef(null);
   const isInView = useInView(ref, {
-    threshold,
-    rootMargin,
+    amount: threshold,
     once: false, // Always allow re-triggering
   });
 

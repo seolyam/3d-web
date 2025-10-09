@@ -10,7 +10,7 @@ interface EqualizerProps {
 
 export function Equalizer({ analyzerNode, isPlaying }: EqualizerProps) {
   const [barHeights, setBarHeights] = useState<number[]>(Array(20).fill(0.1));
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
 
   useEffect(() => {
     if (!analyzerNode || !isPlaying) {

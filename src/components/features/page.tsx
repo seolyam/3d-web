@@ -79,75 +79,77 @@ const featureSections: FeatureSectionProps[] = [
   },
 ];
 
+function FeatureSection({ section }: { section: FeatureSectionProps }) {
+  const { ref, isInView } = useRepeatingScrollAnimation();
+  
+  return (
+    <section
+      id={section.id}
+      className="min-h-screen bg-black flex items-center"
+    >
+      <div className="max-w-6xl mx-auto px-6 w-full">
+        <motion.div
+          ref={ref}
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+          transition={{ duration: 0.8 }}
+          className="text-center space-y-4"
+        >
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-orange-500"
+          >
+            {section.category}
+          </motion.p>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            viewport={{ once: true }}
+            className="text-5xl md:text-7xl font-light tracking-tight"
+          >
+            {section.title}
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="text-white/70 max-w-3xl mx-auto"
+          >
+            {section.description}
+          </motion.p>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          viewport={{ once: true }}
+          className={`relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center ${
+            section.id === "feature-dsee" ? "bg-white" : "bg-black/20"
+          }`}
+        >
+          <Image
+            src={section.imageSrc}
+            alt={section.imageAlt}
+            fill
+            className="object-contain p-8 md:p-10"
+          />
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
 export function Features() {
   return (
     <>
-      {featureSections.map((section) => {
-        const { ref, isInView } = useRepeatingScrollAnimation();
-        return (
-          <section
-            key={section.id}
-            id={section.id}
-            className="min-h-screen bg-black flex items-center"
-          >
-            <div className="max-w-6xl mx-auto px-6 w-full">
-              <motion.div
-                ref={ref}
-                initial={{ opacity: 0, y: 40 }}
-                animate={
-                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }
-                }
-                transition={{ duration: 0.8 }}
-                className="text-center space-y-4"
-              >
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.2 }}
-                  viewport={{ once: true }}
-                  className="text-orange-500"
-                >
-                  {section.category}
-                </motion.p>
-                <motion.h2
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.3 }}
-                  viewport={{ once: true }}
-                  className="text-5xl md:text-7xl font-light tracking-tight"
-                >
-                  {section.title}
-                </motion.h2>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.4 }}
-                  viewport={{ once: true }}
-                  className="text-white/70 max-w-3xl mx-auto"
-                >
-                  {section.description}
-                </motion.p>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                viewport={{ once: true }}
-                className={`relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center ${
-                  section.id === "feature-dsee" ? "bg-white" : "bg-black/20"
-                }`}
-              >
-                <Image
-                  src={section.imageSrc}
-                  alt={section.imageAlt}
-                  fill
-                  className="object-contain p-8 md:p-10"
-                />
-              </motion.div>
-            </div>
-          </section>
-        );
-      })}
+      {featureSections.map((section) => (
+        <FeatureSection key={section.id} section={section} />
+      ))}
     </>
   );
 }
