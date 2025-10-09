@@ -36,14 +36,20 @@ export function Hero({
 }: HeroProps) {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
-  
+
   // Scroll animation hooks
-  const { ref: badgeRef, isInView: badgeInView } = useRepeatingScrollAnimation();
-  const { ref: titleRef, isInView: titleInView } = useRepeatingScrollAnimation();
-  const { ref: subtitleRef, isInView: subtitleInView } = useRepeatingScrollAnimation();
-  const { ref: descriptionRef, isInView: descriptionInView } = useRepeatingScrollAnimation();
-  const { ref: modelRef, isInView: modelInView } = useRepeatingScrollAnimation();
-  const { ref: equalizerRef, isInView: equalizerInView } = useRepeatingScrollAnimation();
+  const { ref: badgeRef, isInView: badgeInView } =
+    useRepeatingScrollAnimation();
+  const { ref: titleRef, isInView: titleInView } =
+    useRepeatingScrollAnimation();
+  const { ref: subtitleRef, isInView: subtitleInView } =
+    useRepeatingScrollAnimation();
+  const { ref: descriptionRef, isInView: descriptionInView } =
+    useRepeatingScrollAnimation();
+  const { ref: modelRef, isInView: modelInView } =
+    useRepeatingScrollAnimation();
+  const { ref: equalizerRef, isInView: equalizerInView } =
+    useRepeatingScrollAnimation();
 
   return (
     <section
@@ -61,7 +67,11 @@ export function Hero({
         <motion.div
           ref={badgeRef}
           initial={{ opacity: 0, scale: 0.8, y: 10 }}
-          animate={badgeInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 10 }}
+          animate={
+            badgeInView
+              ? { opacity: 1, scale: 1, y: 0 }
+              : { opacity: 0, scale: 0.8, y: 10 }
+          }
           transition={{ duration: 0.5, delay: 0.1 }}
         >
           <Badge
@@ -81,7 +91,9 @@ export function Hero({
           <motion.span
             ref={titleRef}
             initial={{ opacity: 0, x: -20 }}
-            animate={titleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }}
+            animate={
+              titleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
+            }
             transition={{ duration: 0.6, delay: 0.3 }}
           >
             <span className="animated-gradient-text">WH‑1000XM5</span>
@@ -90,7 +102,9 @@ export function Hero({
             ref={subtitleRef}
             className="block font-medium"
             initial={{ opacity: 0, x: 20 }}
-            animate={subtitleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+            animate={
+              subtitleInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }
+            }
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             <span className="glowing-text">Premium Noise Canceling</span>
@@ -100,7 +114,9 @@ export function Hero({
         <motion.p
           ref={descriptionRef}
           initial={{ opacity: 0, y: 15 }}
-          animate={descriptionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
+          animate={
+            descriptionInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }
+          }
           transition={{ duration: 0.6, delay: 0.5 }}
           className="text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed"
         >
@@ -112,7 +128,11 @@ export function Hero({
       <motion.div
         ref={modelRef}
         initial={{ opacity: 0, scale: 0.8, y: 30 }}
-        animate={modelInView ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.8, y: 30 }}
+        animate={
+          modelInView
+            ? { opacity: 1, scale: 1, y: 0 }
+            : { opacity: 0, scale: 0.8, y: 30 }
+        }
         transition={{
           duration: 0.8,
           delay: 0.2,
@@ -271,7 +291,11 @@ export function Hero({
       <motion.div
         ref={equalizerRef}
         initial={{ opacity: 0, y: 20, scale: 0.9 }}
-        animate={equalizerInView ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 20, scale: 0.9 }}
+        animate={
+          equalizerInView
+            ? { opacity: 1, y: 0, scale: 1 }
+            : { opacity: 0, y: 20, scale: 0.9 }
+        }
         transition={{
           duration: 0.7,
           delay: 0.4,
