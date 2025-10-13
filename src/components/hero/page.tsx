@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect } from "react";
 import { ProductViewer } from "@/components/3d/ProductViewer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,7 @@ interface HeroProps {
   onVolumeMouseEnter: () => void;
   onVolumeMouseLeave: () => void;
   onVolumeChange: (volume: number) => void;
+  onModelVisibilityChange?: (isVisible: boolean) => void;
 }
 
 export function Hero({
@@ -32,6 +34,7 @@ export function Hero({
   onVolumeMouseEnter,
   onVolumeMouseLeave,
   onVolumeChange,
+  onModelVisibilityChange,
 }: HeroProps) {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
@@ -47,6 +50,12 @@ export function Hero({
     useRepeatingScrollAnimation();
   const { ref: modelRef, isInView: modelInView } =
     useRepeatingScrollAnimation();
+  // Notify parent when the model visibility changes
+  useEffect(() => {
+    if (onModelVisibilityChange) {
+      onModelVisibilityChange(!!modelInView);
+    }
+  }, [modelInView, onModelVisibilityChange]);
   const { ref: equalizerRef, isInView: equalizerInView } =
     useRepeatingScrollAnimation();
 

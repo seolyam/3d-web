@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ProductViewer } from "@/components/3d/ProductViewer";
 import { Button } from "@/components/ui/button";
 import { useState, useRef, useEffect } from "react";
 import { Hero } from "@/components/hero/page";
@@ -23,6 +24,7 @@ export default function Home() {
   const gainNodeRef = useRef<GainNode | null>(null);
   const pannerNodeRef = useRef<StereoPannerNode | null>(null);
   const analyzerNodeRef = useRef<AnalyserNode | null>(null);
+  const [isHeroModelVisible, setIsHeroModelVisible] = useState(true);
 
   // Set up audio processing for distance effects
   useEffect(() => {
@@ -179,7 +181,15 @@ export default function Home() {
         animate={{ y: 0 }}
         transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="relative max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          {/* Centered mini model overlay */}
+          {!isHeroModelVisible && (
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div className="hidden md:block w-20 h-12 md:w-24 md:h-14 lg:w-28 lg:h-16 rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
+                <ProductViewer className="w-full h-full" />
+              </div>
+            </div>
+          )}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -283,6 +293,7 @@ export default function Home() {
           onVolumeMouseEnter={handleVolumeMouseEnter}
           onVolumeMouseLeave={handleVolumeMouseLeave}
           onVolumeChange={handleVolumeChange}
+          onModelVisibilityChange={setIsHeroModelVisible}
         />
       </div>
 
