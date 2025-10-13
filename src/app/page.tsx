@@ -185,7 +185,28 @@ export default function Home() {
           {/* Centered mini model overlay */}
           {!isHeroModelVisible && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="hidden md:block w-20 h-12 md:w-24 md:h-14 lg:w-28 lg:h-16 rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
+              <div className="hidden md:block relative w-20 h-12 md:w-24 md:h-14 lg:w-28 lg:h-16 rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
+                {/* Animated gradient overlay when music is playing */}
+                {isPlaying && (
+                  <motion.div
+                    className="absolute inset-0"
+                    animate={{
+                      background: [
+                        "radial-gradient(120% 120% at 0% 0%, rgba(59,130,246,0.25), transparent 60%), radial-gradient(120% 120% at 100% 0%, rgba(168,85,247,0.25), transparent 60%), radial-gradient(120% 120% at 50% 100%, rgba(236,72,153,0.2), transparent 60%)",
+                        "radial-gradient(120% 120% at 100% 0%, rgba(59,130,246,0.2), transparent 60%), radial-gradient(120% 120% at 50% 100%, rgba(168,85,247,0.3), transparent 60%), radial-gradient(120% 120% at 0% 0%, rgba(236,72,153,0.25), transparent 60%)",
+                        "radial-gradient(120% 120% at 50% 100%, rgba(59,130,246,0.25), transparent 60%), radial-gradient(120% 120% at 0% 0%, rgba(168,85,247,0.2), transparent 60%), radial-gradient(120% 120% at 100% 0%, rgba(236,72,153,0.25), transparent 60%)",
+                      ],
+                      opacity: [0.5, 0.8, 0.5],
+                      scale: [1, 1.05, 1],
+                    }}
+                    transition={{
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    style={{ mixBlendMode: "screen" }}
+                  />
+                )}
                 <ProductViewer className="w-full h-full" />
               </div>
             </div>
