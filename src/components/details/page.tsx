@@ -32,7 +32,7 @@ export function Details() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               className="text-left space-y-4"
             >
               <h3 className="text-2xl font-medium tracking-tight">
@@ -50,7 +50,7 @@ export function Details() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               className="text-left space-y-4"
             >
               <h3 className="text-2xl font-medium tracking-tight">
@@ -67,7 +67,7 @@ export function Details() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              viewport={{ once: true }}
+              viewport={{ once: false, amount: 0.2 }}
               className="text-left space-y-4"
             >
               <h3 className="text-2xl font-medium tracking-tight">
@@ -85,7 +85,7 @@ export function Details() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             className="mt-20"
           >
             <h3 className="text-3xl font-light tracking-tight mb-12">
@@ -111,7 +111,7 @@ export function Details() {
                   initial={{ opacity: 0, x: -20 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4, delay: 0.5 + index * 0.05 }}
-                  viewport={{ once: true }}
+                  viewport={{ once: false, amount: 0.2 }}
                   className="flex items-center gap-3 text-white/80"
                 >
                   <div className="w-1.5 h-1.5 rounded-full bg-white/60 flex-shrink-0"></div>
@@ -125,7 +125,7 @@ export function Details() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             className="flex gap-6 justify-center mt-16"
           >
             <Button

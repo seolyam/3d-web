@@ -81,7 +81,7 @@ const featureSections: FeatureSectionProps[] = [
 
 function FeatureSection({ section }: { section: FeatureSectionProps }) {
   const { ref, isInView } = useRepeatingScrollAnimation();
-  
+
   return (
     <section
       id={section.id}
@@ -99,7 +99,7 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             className="text-orange-500"
           >
             {section.category}
@@ -108,7 +108,7 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             className="text-5xl md:text-7xl font-light tracking-tight"
           >
             {section.title}
@@ -117,7 +117,7 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
+            viewport={{ once: false, amount: 0.2 }}
             className="text-white/70 max-w-3xl mx-auto"
           >
             {section.description}
@@ -127,7 +127,7 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          viewport={{ once: true }}
+          viewport={{ once: false, amount: 0.2 }}
           className={`relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center ${
             section.id === "feature-dsee" ? "bg-white" : "bg-black/20"
           }`}
