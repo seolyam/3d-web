@@ -147,7 +147,7 @@ export function Hero({
           type: "spring",
           stiffness: 100,
         }}
-        className="relative w-full max-w-3xl mx-auto px-6"
+        className="relative w-full max-w-3xl mx-auto px-6 gpu-hack"
         style={{ y }}
       >
         <div className="aspect-[4/3] relative">

@@ -125,6 +125,21 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Prevent white flashes on rapid scroll and promote key layers to GPU */
+html,
+body {
+  background-color: #000; /* harden background to black during paints */
+  overflow-x: hidden;
+  min-height: 100%;
+}
+
+/* Helper to force a new compositing layer for smoother scrolling/animations */
+.gpu-hack {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: transform;
+}
+
 /* Enhanced smooth transitions for sticky navbar */
 .sticky-nav {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
