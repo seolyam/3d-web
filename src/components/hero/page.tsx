@@ -11,7 +11,6 @@ import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 import { LoadingSequenceState } from "@/hooks/useLoadingSequence";
 
 interface HeroProps {
-  audioRef: React.RefObject<HTMLAudioElement | null>;
   isPlaying: boolean;
   volume: number;
   showVolumeSlider: boolean;
@@ -26,7 +25,6 @@ interface HeroProps {
 }
 
 export function Hero({
-  audioRef: _audioRef,
   isPlaying,
   volume,
   showVolumeSlider,
@@ -43,24 +41,20 @@ export function Hero({
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
   // Scroll animation hooks
-  const { ref: badgeRef, isInView: badgeInView } =
-    useRepeatingScrollAnimation();
-  const { ref: titleRef, isInView: titleInView } =
-    useRepeatingScrollAnimation();
-  const { ref: subtitleRef, isInView: subtitleInView } =
-    useRepeatingScrollAnimation();
-  const { ref: descriptionRef, isInView: descriptionInView } =
-    useRepeatingScrollAnimation();
-  const { ref: modelRef, isInView: modelInView } =
-    useRepeatingScrollAnimation();
+  const { ref: badgeRef } = useRepeatingScrollAnimation();
+  const { ref: titleRef } = useRepeatingScrollAnimation();
+  const { ref: subtitleRef } = useRepeatingScrollAnimation();
+  const { ref: descriptionRef } = useRepeatingScrollAnimation();
+  const { ref: modelRef, isInView: modelInView } = useRepeatingScrollAnimation();
+  
   // Notify parent when the model visibility changes
   useEffect(() => {
     if (onModelVisibilityChange) {
       onModelVisibilityChange(!!modelInView);
     }
   }, [modelInView, onModelVisibilityChange]);
-  const { ref: equalizerRef, isInView: equalizerInView } =
-    useRepeatingScrollAnimation();
+  
+  const { ref: equalizerRef } = useRepeatingScrollAnimation();
 
   return (
     <section

@@ -9,6 +9,7 @@ import { Details } from "@/components/details/page";
 import { Features } from "@/components/features/page";
 import { Lifestyle } from "@/components/lifestyle/page";
 import { CTA } from "@/components/cta/page";
+import { useLoadingSequence } from "@/hooks/useLoadingSequence";
 
 export default function Home() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -23,6 +24,7 @@ export default function Home() {
   const gainNodeRef = useRef<GainNode | null>(null);
   const pannerNodeRef = useRef<StereoPannerNode | null>(null);
   const analyzerNodeRef = useRef<AnalyserNode | null>(null);
+  const loadingSequence = useLoadingSequence();
 
   // Set up audio processing for distance effects
   useEffect(() => {
@@ -223,7 +225,6 @@ export default function Home() {
       </nav>
 
       <Hero
-        audioRef={audioRef}
         isPlaying={isPlaying}
         volume={volume}
         showVolumeSlider={showVolumeSlider}
@@ -233,6 +234,7 @@ export default function Home() {
         onVolumeMouseEnter={handleVolumeMouseEnter}
         onVolumeMouseLeave={handleVolumeMouseLeave}
         onVolumeChange={handleVolumeChange}
+        loadingSequence={loadingSequence}
       />
 
       <Variants />
