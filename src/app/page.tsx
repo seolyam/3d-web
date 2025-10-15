@@ -10,8 +10,10 @@ import { Details } from "@/components/details/page";
 import { Features } from "@/components/features/page";
 import { Lifestyle } from "@/components/lifestyle/page";
 import { CTA } from "@/components/cta/page";
+import { useLoadingSequence } from "@/hooks/useLoadingSequence";
 
 export default function Home() {
+  const loadingSequence = useLoadingSequence();
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(50);
   const [showVolumeSlider, setShowVolumeSlider] = useState(false);
@@ -177,8 +179,25 @@ export default function Home() {
       />
       <motion.header
         className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/10"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
+        initial={{ y: -100, opacity: 0 }}
+        animate={{
+          y:
+            loadingSequence.stage === "navbar" ||
+            loadingSequence.stage === "title" ||
+            loadingSequence.stage === "text" ||
+            loadingSequence.stage === "model" ||
+            loadingSequence.stage === "complete"
+              ? 0
+              : -100,
+          opacity:
+            loadingSequence.stage === "navbar" ||
+            loadingSequence.stage === "title" ||
+            loadingSequence.stage === "text" ||
+            loadingSequence.stage === "model" ||
+            loadingSequence.stage === "complete"
+              ? 1
+              : 0,
+        }}
         transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
       >
         <div className="relative max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -269,7 +288,24 @@ export default function Home() {
       <motion.nav
         className="sticky-nav fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col gap-3"
         initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
+        animate={{
+          opacity:
+            loadingSequence.stage === "navbar" ||
+            loadingSequence.stage === "title" ||
+            loadingSequence.stage === "text" ||
+            loadingSequence.stage === "model" ||
+            loadingSequence.stage === "complete"
+              ? 1
+              : 0,
+          x:
+            loadingSequence.stage === "navbar" ||
+            loadingSequence.stage === "title" ||
+            loadingSequence.stage === "text" ||
+            loadingSequence.stage === "model" ||
+            loadingSequence.stage === "complete"
+              ? 0
+              : 50,
+        }}
         transition={{ duration: 0.8, delay: 0.5 }}
       >
         {[
@@ -310,6 +346,7 @@ export default function Home() {
           showVolumeSlider={showVolumeSlider}
           distanceRatio={distanceRatio}
           analyzerNode={analyzerNodeRef.current}
+          loadingSequence={loadingSequence}
           onTogglePlayPause={togglePlayPause}
           onVolumeMouseEnter={handleVolumeMouseEnter}
           onVolumeMouseLeave={handleVolumeMouseLeave}
@@ -339,16 +376,16 @@ export default function Home() {
         aria-label="Back to top"
         initial={{ opacity: 0, scale: 0 }}
         animate={{
-          opacity: 1,
-          scale: 1,
-          y: [0, -5, 0],
+          opacity: loadingSequence.stage === "complete" ? 1 : 0,
+          scale: loadingSequence.stage === "complete" ? 1 : 0,
+          y: loadingSequence.stage === "complete" ? [0, -5, 0] : 0,
         }}
         transition={{
-          opacity: { duration: 0.5, delay: 1 },
-          scale: { duration: 0.5, delay: 1 },
+          opacity: { duration: 0.5, delay: 0.5 },
+          scale: { duration: 0.5, delay: 0.5 },
           y: {
             duration: 2,
-            repeat: Infinity,
+            repeat: loadingSequence.stage === "complete" ? Infinity : 0,
             ease: "easeInOut",
           },
         }}
