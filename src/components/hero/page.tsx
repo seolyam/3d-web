@@ -11,6 +11,7 @@ import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
 import { LoadingSequenceState } from "@/hooks/useLoadingSequence";
 
 interface HeroProps {
+  audioRef?: React.RefObject<HTMLAudioElement | null>;
   isPlaying: boolean;
   volume: number;
   showVolumeSlider: boolean;
@@ -25,6 +26,7 @@ interface HeroProps {
 }
 
 export function Hero({
+  audioRef, // Marked as optional, not used in component
   isPlaying,
   volume,
   showVolumeSlider,
@@ -37,6 +39,9 @@ export function Hero({
   onVolumeChange,
   onModelVisibilityChange,
 }: HeroProps) {
+  // Use a no-op to prevent unused variable warning
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+  audioRef;
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
 
