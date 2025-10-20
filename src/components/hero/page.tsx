@@ -77,7 +77,7 @@ export function Hero({
 
   const gradientBackground = useMotionTemplate`radial-gradient(circle at ${gradient1X}% ${gradient1Y}%, rgba(59,130,246,0.2), transparent 40%), radial-gradient(circle at ${gradient2X}% ${gradient2Y}%, rgba(168,85,247,0.18), transparent 45%), radial-gradient(circle at ${gradient3X}% ${gradient3Y}%, rgba(236,72,153,0.12), transparent 50%)`;
 
-  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
   const phaseRef = useRef(0);
 
   useEffect(() => {
@@ -86,7 +86,9 @@ export function Hero({
       return;
     }
 
-    dataArrayRef.current = new Uint8Array(analyzerNode.frequencyBinCount || 0);
+    dataArrayRef.current = new Uint8Array<ArrayBuffer>(
+      analyzerNode.frequencyBinCount || 0
+    );
   }, [analyzerNode]);
 
   useAnimationFrame((_, delta) => {
