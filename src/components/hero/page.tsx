@@ -77,7 +77,8 @@ export function Hero({
 
   const gradientBackground = useMotionTemplate`radial-gradient(circle at ${gradient1X}% ${gradient1Y}%, rgba(59,130,246,0.2), transparent 40%), radial-gradient(circle at ${gradient2X}% ${gradient2Y}%, rgba(168,85,247,0.18), transparent 45%), radial-gradient(circle at ${gradient3X}% ${gradient3Y}%, rgba(236,72,153,0.12), transparent 50%)`;
 
-  const dataArrayRef = useRef<Uint8Array<ArrayBuffer> | null>(null);
+  type AnalyzerArray = Uint8Array<ArrayBuffer>;
+  const dataArrayRef = useRef<AnalyzerArray | null>(null);
   const phaseRef = useRef(0);
 
   useEffect(() => {
@@ -86,9 +87,9 @@ export function Hero({
       return;
     }
 
-    dataArrayRef.current = new Uint8Array<ArrayBuffer>(
+    dataArrayRef.current = new Uint8Array(
       analyzerNode.frequencyBinCount || 0
-    );
+    ) as AnalyzerArray;
   }, [analyzerNode]);
 
   useAnimationFrame((_, delta) => {
@@ -100,7 +101,7 @@ export function Hero({
 
     if (isPlaying) {
       if (analyzer && dataArray && dataArray.length > 0) {
-        analyzer.getByteFrequencyData(dataArray);
+        analyzer.getByteFrequencyData(dataArray as AnalyzerArray);
         let sum = 0;
         for (let i = 0; i < dataArray.length; i += 1) {
           sum += dataArray[i];
