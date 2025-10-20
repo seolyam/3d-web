@@ -355,15 +355,15 @@ export default function Home() {
         />
       </div>
 
-      <Variants />
+      <Variants isPlaying={isPlaying} />
 
-      <Lifestyle />
+      <Lifestyle isPlaying={isPlaying} />
 
-      <Details />
+      <Details isPlaying={isPlaying} />
 
-      <Features />
+      <Features isPlaying={isPlaying} />
 
-      <CTA />
+      <CTA isPlaying={isPlaying} />
 
       <footer className="border-t border-white/10 bg-black py-16">
         <div className="max-w-7xl mx-auto px-6 text-center text-white/50">

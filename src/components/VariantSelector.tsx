@@ -4,19 +4,42 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useProductStore } from "@/hooks/useProductStore";
+import {
+  gradientHeadingVariants,
+  taglinePulseVariants,
+} from "@/lib/audioVariants";
 
-export function VariantSelector() {
+interface VariantSelectorProps {
+  isPlaying?: boolean;
+}
+
+export function VariantSelector({ isPlaying = false }: VariantSelectorProps) {
   const { product, selectedVariant, setSelectedVariant } = useProductStore();
 
   return (
     <div className="space-y-10 text-center">
       <div className="space-y-3">
-        <h3 className="text-4xl md:text-5xl font-light tracking-tight">
+        <motion.h3
+          className={`text-4xl md:text-5xl font-light tracking-tight ${
+            isPlaying
+              ? "bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+              : "text-white"
+          }`}
+          variants={gradientHeadingVariants}
+          initial="idle"
+          animate={isPlaying ? "playing" : "idle"}
+          style={{ backgroundSize: isPlaying ? "200% 200%" : undefined }}
+        >
           Choose Your Style
-        </h3>
-        <p className="text-white/70 text-lg">
+        </motion.h3>
+        <motion.p
+          className="text-white/70 text-lg"
+          variants={taglinePulseVariants}
+          initial="idle"
+          animate={isPlaying ? "playing" : "idle"}
+        >
           Three stunning finishes to match your look
-        </p>
+        </motion.p>
       </div>
       <div className="flex flex-wrap justify-center gap-6">
         {product.variants.map((variant) => (

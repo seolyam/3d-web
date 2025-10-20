@@ -3,6 +3,11 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
+import {
+  floatingGlowVariants,
+  gradientHeadingVariants,
+  taglinePulseVariants,
+} from "@/lib/audioVariants";
 
 interface FeatureSectionProps {
   id: string;
@@ -79,15 +84,30 @@ const featureSections: FeatureSectionProps[] = [
   },
 ];
 
-function FeatureSection({ section }: { section: FeatureSectionProps }) {
+interface FeatureSectionComponentProps {
+  section: FeatureSectionProps;
+  isPlaying: boolean;
+}
+
+function FeatureSection({
+  section,
+  isPlaying,
+}: FeatureSectionComponentProps) {
   const { ref, isInView } = useRepeatingScrollAnimation();
 
   return (
     <section
       id={section.id}
-      className="min-h-screen bg-black flex items-center"
+      className="relative min-h-screen bg-black flex items-center overflow-hidden"
     >
-      <div className="max-w-6xl mx-auto px-6 w-full">
+      <motion.div
+        className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.18),transparent_55%),radial-gradient(circle_at_75%_75%,rgba(236,72,153,0.18),transparent_60%),linear-gradient(160deg,rgba(0,0,0,0.9),rgba(0,0,0,0.65))]"
+        variants={floatingGlowVariants}
+        initial="idle"
+        animate={isPlaying ? "playing" : "idle"}
+        style={{ backgroundSize: "200% 200%" }}
+      />
+      <div className="relative max-w-6xl mx-auto px-6 w-full">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 40 }}
@@ -96,29 +116,47 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
           className="text-center space-y-4"
         >
           <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            viewport={{ once: false, amount: 0.2 }}
-            className="text-orange-500"
+            className="uppercase tracking-[0.3em] text-xs"
+            animate={
+              isPlaying
+                ? {
+                    letterSpacing: ["0.3em", "0.45em", "0.3em"],
+                    opacity: [0.6, 1, 0.6],
+                    color: ["#22d3ee", "#a855f7", "#ec4899"],
+                    transition: {
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  }
+                : {
+                    letterSpacing: "0.3em",
+                    opacity: 0.85,
+                    color: "rgba(255,255,255,0.75)",
+                    transition: { duration: 0.4, ease: "easeOut" },
+                  }
+            }
           >
             {section.category}
           </motion.p>
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            viewport={{ once: false, amount: 0.2 }}
-            className="text-5xl md:text-7xl font-light tracking-tight"
+            className={`text-5xl md:text-7xl font-light tracking-tight ${
+              isPlaying
+                ? "bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                : "text-white"
+            }`}
+            variants={gradientHeadingVariants}
+            initial="idle"
+            animate={isPlaying ? "playing" : "idle"}
+            style={{ backgroundSize: isPlaying ? "200% 200%" : undefined }}
           >
             {section.title}
           </motion.h2>
           <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: false, amount: 0.2 }}
             className="text-white/70 max-w-3xl mx-auto"
+            variants={taglinePulseVariants}
+            initial="idle"
+            animate={isPlaying ? "playing" : "idle"}
           >
             {section.description}
           </motion.p>
@@ -131,6 +169,29 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
           className={`relative mt-10 aspect-[21/9] rounded-3xl overflow-hidden border border-white/10 flex items-center justify-center ${
             section.id === "feature-dsee" ? "bg-white" : "bg-black/20"
           }`}
+          animate={
+            isPlaying
+              ? {
+                  boxShadow: [
+                    "0 0 0 rgba(59,130,246,0)",
+                    "0 24px 50px rgba(59,130,246,0.18)",
+                    "0 0 0 rgba(59,130,246,0)",
+                  ],
+                  transition: {
+                    boxShadow: {
+                      duration: 4,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    },
+                  },
+                }
+              : {
+                  boxShadow: "0 0 0 rgba(59,130,246,0)",
+                  transition: {
+                    boxShadow: { duration: 0.6, ease: "easeInOut" },
+                  },
+                }
+          }
         >
           <Image
             src={section.imageSrc}
@@ -144,11 +205,19 @@ function FeatureSection({ section }: { section: FeatureSectionProps }) {
   );
 }
 
-export function Features() {
+interface FeaturesProps {
+  isPlaying?: boolean;
+}
+
+export function Features({ isPlaying = false }: FeaturesProps) {
   return (
     <>
       {featureSections.map((section) => (
-        <FeatureSection key={section.id} section={section} />
+        <FeatureSection
+          key={section.id}
+          section={section}
+          isPlaying={isPlaying}
+        />
       ))}
     </>
   );
