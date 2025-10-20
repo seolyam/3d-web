@@ -1,7 +1,14 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect } from "react";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionTemplate,
+  useMotionValue,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { useEffect, useRef } from "react";
 import { ProductViewer } from "@/components/3d/ProductViewer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,12 +68,82 @@ export function Hero({
   
   const { ref: equalizerRef } = useRepeatingScrollAnimation();
 
+  const gradient1X = useMotionValue(30);
+  const gradient1Y = useMotionValue(20);
+  const gradient2X = useMotionValue(70);
+  const gradient2Y = useMotionValue(60);
+  const gradient3X = useMotionValue(50);
+  const gradient3Y = useMotionValue(100);
+
+  const gradientBackground = useMotionTemplate`radial-gradient(circle at ${gradient1X}% ${gradient1Y}%, rgba(59,130,246,0.2), transparent 40%), radial-gradient(circle at ${gradient2X}% ${gradient2Y}%, rgba(168,85,247,0.18), transparent 45%), radial-gradient(circle at ${gradient3X}% ${gradient3Y}%, rgba(236,72,153,0.12), transparent 50%)`;
+
+  const dataArrayRef = useRef<Uint8Array | null>(null);
+  const phaseRef = useRef(0);
+
+  useEffect(() => {
+    if (!analyzerNode) {
+      dataArrayRef.current = null;
+      return;
+    }
+
+    dataArrayRef.current = new Uint8Array(analyzerNode.frequencyBinCount || 0);
+  }, [analyzerNode]);
+
+  useAnimationFrame((_, delta) => {
+    const analyzer = analyzerNode;
+    const dataArray = dataArrayRef.current;
+    const deltaFactor = Math.min(delta / 160, 0.15);
+
+    let energy = 0;
+
+    if (isPlaying) {
+      if (analyzer && dataArray && dataArray.length > 0) {
+        analyzer.getByteFrequencyData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i += 1) {
+          sum += dataArray[i];
+        }
+        energy = sum / (dataArray.length * 255);
+      } else {
+        energy = 0.35;
+      }
+
+      phaseRef.current += delta * (0.0006 + energy * 0.02);
+      const phase = phaseRef.current;
+      const strength = 4 + energy * 14;
+
+      gradient1X.set(30 + Math.sin(phase) * strength);
+      gradient1Y.set(20 + Math.cos(phase * 0.7) * strength * 0.55);
+      gradient2X.set(70 + Math.sin(phase * 1.1 + 1) * strength * 0.7);
+      gradient2Y.set(60 + Math.cos(phase * 0.9 + 0.3) * strength * 0.5);
+      gradient3X.set(50 + Math.sin(phase * 0.95 + 2) * strength * 0.9);
+      gradient3Y.set(100 + Math.cos(phase * 1.05 + 0.7) * strength * 0.6);
+    } else {
+      phaseRef.current = 0;
+
+      const resetToBase = (value: typeof gradient1X, base: number) => {
+        const current = value.get();
+        value.set(current + (base - current) * deltaFactor);
+      };
+
+      resetToBase(gradient1X, 30);
+      resetToBase(gradient1Y, 20);
+      resetToBase(gradient2X, 70);
+      resetToBase(gradient2Y, 60);
+      resetToBase(gradient3X, 50);
+      resetToBase(gradient3Y, 100);
+    }
+  });
+
   return (
     <section
       id="hero"
       className="relative h-screen flex flex-col items-center justify-center pt-40"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.2),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(168,85,247,0.18),transparent_45%),radial-gradient(circle_at_50%_100%,rgba(236,72,153,0.12),transparent_50%)]" />
+      <motion.div
+        className="pointer-events-none absolute inset-0 transition-[background-position] duration-200"
+        style={{ background: gradientBackground }}
+      />
 
       <motion.div
         initial={{ opacity: 0, y: -20 }}
