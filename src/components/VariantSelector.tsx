@@ -17,7 +17,7 @@ export function VariantSelector({ isPlaying = false }: VariantSelectorProps) {
   const { product, selectedVariant, setSelectedVariant } = useProductStore();
 
   return (
-    <div className="space-y-10 text-center">
+    <div className="space-y-10 text-center m-20">
       <div className="space-y-3">
         <motion.h3
           className={`text-4xl md:text-5xl font-light tracking-tight ${
