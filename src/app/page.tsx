@@ -156,6 +156,14 @@ export default function Home() {
     }, 1000);
   };
 
+  const scrollToHero = () => {
+    if (heroSectionRef.current) {
+      heroSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (volumeTimeoutRef.current) {
@@ -204,7 +212,12 @@ export default function Home() {
           {/* Centered mini model overlay */}
           {!isHeroModelVisible && (
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-              <div className="hidden md:block relative w-20 h-12 md:w-24 md:h-14 lg:w-28 lg:h-16 rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden">
+              <button
+                type="button"
+                onClick={scrollToHero}
+                className="pointer-events-auto hidden md:block relative w-20 h-12 md:w-24 md:h-14 lg:w-28 lg:h-16 rounded-xl border border-white/10 bg-black/30 backdrop-blur-sm overflow-hidden transition-transform hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                aria-label="Back to top"
+              >
                 {/* Animated gradient overlay when music is playing */}
                 {isPlaying && (
                   <motion.div
@@ -227,7 +240,7 @@ export default function Home() {
                   />
                 )}
                 <ProductViewer className="w-full h-full" />
-              </div>
+              </button>
             </div>
           )}
           <motion.div
