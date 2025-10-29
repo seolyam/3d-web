@@ -12,6 +12,7 @@ import { useEffect, useRef } from "react";
 import { ProductViewer } from "@/components/3d/ProductViewer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 import { Equalizer } from "@/components/ui/equalizer";
 import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 import { useRepeatingScrollAnimation } from "@/hooks/useScrollAnimation";
@@ -322,6 +323,48 @@ export function Hero({
           Flagship noise canceling with Hi‑Res Audio, LDAC, and Edge‑AI
           upscaling.
         </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.95 }}
+          animate={{
+            opacity:
+              loadingSequence.stage === "text" ||
+              loadingSequence.stage === "model" ||
+              loadingSequence.stage === "complete"
+                ? 1
+                : 0,
+            y:
+              loadingSequence.stage === "text" ||
+              loadingSequence.stage === "model" ||
+              loadingSequence.stage === "complete"
+                ? 0
+                : 20,
+            scale:
+              loadingSequence.stage === "text" ||
+              loadingSequence.stage === "model" ||
+              loadingSequence.stage === "complete"
+                ? 1
+                : 0.95,
+          }}
+          transition={{
+            duration: 0.7,
+            type: "spring",
+            stiffness: 110,
+            damping: 16,
+            delay: 0.1,
+          }}
+          className="mt-6 flex justify-center"
+        >
+          <Button
+            asChild
+            size="lg"
+            className="rounded-full bg-white text-black px-8 py-6 text-base shadow-[0_15px_30px_rgba(59,130,246,0.35)] hover:bg-white/90 transition-all"
+          >
+            <Link href="/order" aria-label="Order the WH-1000XM5 now">
+              Buy Now
+            </Link>
+          </Button>
+        </motion.div>
       </motion.div>
 
       <motion.div
