@@ -18,9 +18,24 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const shippingOptions = [
-  { id: "standard", label: "Standard Shipping", eta: "3–5 business days", cost: 0 },
-  { id: "express", label: "Express Shipping", eta: "1–2 business days", cost: 19 },
-  { id: "priority", label: "Priority Overnight", eta: "Next business day", cost: 35 },
+  {
+    id: "standard",
+    label: "Standard Shipping",
+    eta: "3–5 business days",
+    cost: 0,
+  },
+  {
+    id: "express",
+    label: "Express Shipping",
+    eta: "1–2 business days",
+    cost: 19,
+  },
+  {
+    id: "priority",
+    label: "Priority Overnight",
+    eta: "Next business day",
+    cost: 35,
+  },
 ];
 
 const colors = [
@@ -87,13 +102,16 @@ export default function OrderPage() {
       <div className="relative z-10 mx-auto flex max-w-6xl flex-col gap-12 px-6 py-24 md:px-10">
         <div className="flex flex-wrap items-center justify-between gap-6">
           <div className="max-w-xl space-y-4">
-            <Badge className="bg-white/15 text-white/80 border-white/25">Limited Pre-Order</Badge>
+            <Badge className="bg-white/15 text-white/80 border-white/25">
+              Limited Pre-Order
+            </Badge>
             <h1 className="text-3xl font-light tracking-tight md:text-4xl">
               Complete your Audionix WH‑1000XM5 order
             </h1>
             <p className="text-base text-white/70 md:text-lg">
-              Personalize your build, choose delivery preferences, and secure a pair of our flagship
-              noise canceling headphones in just a few steps.
+              Personalize your build, choose delivery preferences, and secure a
+              pair of our flagship noise canceling headphones in just a few
+              steps.
             </p>
           </div>
 
@@ -109,9 +127,12 @@ export default function OrderPage() {
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold">Order Summary</CardTitle>
+              <CardTitle className="text-xl font-semibold">
+                Order Summary
+              </CardTitle>
               <CardDescription className="text-white/60">
-                Review your selection and confirm the configuration before checkout.
+                Review your selection and confirm the configuration before
+                checkout.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -126,17 +147,29 @@ export default function OrderPage() {
                   />
                 </div>
                 <div className="space-y-2 text-center md:text-left">
-                  <p className="text-lg font-medium text-white">Audionix WH‑1000XM5</p>
+                  <p className="text-lg font-medium text-white">
+                    Audionix WH‑1000XM5
+                  </p>
                   <p className="text-sm text-white/60">
-                    Adaptive noise canceling, Hi‑Res Audio + LDAC, 30mm precision drivers.
+                    Adaptive noise canceling, Hi‑Res Audio + LDAC, 30mm
+                    precision drivers.
                   </p>
                   <p className="text-xs uppercase tracking-[0.25em] text-white/40">
-                    Finish · <span className="text-white/80 tracking-normal">{selectedFinish.label}</span>
+                    Finish ·{" "}
+                    <span className="text-white/80 tracking-normal">
+                      {selectedFinish.label}
+                    </span>
                   </p>
                   <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-white/50 md:justify-start">
-                    <Badge className="border-white/10 bg-white/10 text-white/70">Edge-AI Upscaling</Badge>
-                    <Badge className="border-white/10 bg-white/10 text-white/70">30 hr battery</Badge>
-                    <Badge className="border-white/10 bg-white/10 text-white/70">Ambient Sound</Badge>
+                    <Badge className="border-white/10 bg-white/10 text-white/70">
+                      Edge-AI Upscaling
+                    </Badge>
+                    <Badge className="border-white/10 bg-white/10 text-white/70">
+                      30 hr battery
+                    </Badge>
+                    <Badge className="border-white/10 bg-white/10 text-white/70">
+                      Ambient Sound
+                    </Badge>
                   </div>
                 </div>
               </div>
@@ -174,7 +207,9 @@ export default function OrderPage() {
                 </div>
                 <div className="flex items-center justify-between text-white/70">
                   <span>Shipping</span>
-                  <span>{shippingCost === 0 ? "Complimentary" : `$${shippingCost}`}</span>
+                  <span>
+                    {shippingCost === 0 ? "Complimentary" : `$${shippingCost}`}
+                  </span>
                 </div>
                 <Separator className="border-white/10 bg-white/5" />
                 <div className="flex items-center justify-between text-base font-semibold text-white">
@@ -185,7 +220,8 @@ export default function OrderPage() {
             </CardContent>
             <CardFooter className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
               <p className="text-xs text-white/50">
-                Taxes calculated at checkout. Complimentary returns within 30 days.
+                Taxes calculated at checkout. Complimentary returns within 30
+                days.
               </p>
               <Button size="lg" className="rounded-full px-7 py-6">
                 Secure Checkout
@@ -195,7 +231,9 @@ export default function OrderPage() {
 
           <Card className="border-white/10 bg-white/5 backdrop-blur-xl">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold">Your Details</CardTitle>
+              <CardTitle className="text-xl font-semibold">
+                Your Details
+              </CardTitle>
               <CardDescription className="text-white/60">
                 Shipping, billing, and personalization preferences.
               </CardDescription>
@@ -213,9 +251,12 @@ export default function OrderPage() {
                     role="status"
                     aria-live="polite"
                   >
-                    <p className="font-medium text-emerald-100">Order placed successfully!</p>
+                    <p className="font-medium text-emerald-100">
+                      Order placed successfully!
+                    </p>
                     <p className="text-xs text-emerald-200/80">
-                      We&apos;ll send a confirmation email with tracking details as soon as it ships.
+                      We&apos;ll send a confirmation email with tracking details
+                      as soon as it ships.
                     </p>
                   </motion.div>
                 )}
@@ -224,7 +265,10 @@ export default function OrderPage() {
               <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid gap-5 md:grid-cols-2">
                   <div className="space-y-2">
-                    <label htmlFor="first-name" className="text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="first-name"
+                      className="text-sm font-medium text-white/80"
+                    >
                       First name
                     </label>
                     <input
@@ -236,7 +280,10 @@ export default function OrderPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="last-name" className="text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="last-name"
+                      className="text-sm font-medium text-white/80"
+                    >
                       Last name
                     </label>
                     <input
@@ -250,7 +297,10 @@ export default function OrderPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="email" className="text-sm font-medium text-white/80">
+                  <label
+                    htmlFor="email"
+                    className="text-sm font-medium text-white/80"
+                  >
                     Email address
                   </label>
                   <input
@@ -264,7 +314,10 @@ export default function OrderPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <label htmlFor="address" className="text-sm font-medium text-white/80">
+                  <label
+                    htmlFor="address"
+                    className="text-sm font-medium text-white/80"
+                  >
                     Shipping address
                   </label>
                   <input
@@ -278,7 +331,10 @@ export default function OrderPage() {
 
                 <div className="grid gap-5 md:grid-cols-3">
                   <div className="space-y-2">
-                    <label htmlFor="city" className="text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="city"
+                      className="text-sm font-medium text-white/80"
+                    >
                       City
                     </label>
                     <input
@@ -289,7 +345,10 @@ export default function OrderPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="postal-code" className="text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="postal-code"
+                      className="text-sm font-medium text-white/80"
+                    >
                       Postal code
                     </label>
                     <input
@@ -301,7 +360,10 @@ export default function OrderPage() {
                     />
                   </div>
                   <div className="space-y-2">
-                    <label htmlFor="country" className="text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="country"
+                      className="text-sm font-medium text-white/80"
+                    >
                       Country
                     </label>
                     <input
@@ -316,14 +378,17 @@ export default function OrderPage() {
 
                 <div className="grid gap-5 md:grid-cols-2">
                   <div className="space-y-3">
-                    <span className="text-sm font-medium text-white/80">Finish</span>
+                    <span className="text-sm font-medium text-white/80">
+                      Finish
+                    </span>
                     <div className="flex flex-wrap gap-3">
                       {colors.map((color) => (
                         <label
                           key={color.id}
                           className={cn(
                             "flex min-w-[140px] flex-1 cursor-pointer items-center gap-3 rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/80 transition hover:border-white/30 focus-within:border-white/40 focus-within:ring-2 focus-within:ring-white/40",
-                            finish === color.id && "border-white/40 bg-white/10 text-white"
+                            finish === color.id &&
+                              "border-white/40 bg-white/10 text-white"
                           )}
                         >
                           <input
@@ -347,7 +412,10 @@ export default function OrderPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label htmlFor="quantity" className="text-sm font-medium text-white/80">
+                    <label
+                      htmlFor="quantity"
+                      className="text-sm font-medium text-white/80"
+                    >
                       Quantity
                     </label>
                     <input
@@ -360,7 +428,9 @@ export default function OrderPage() {
                       value={quantity}
                       onChange={(event) => {
                         const parsed = Number(event.target.value);
-                        setQuantity(Number.isNaN(parsed) ? 1 : Math.min(Math.max(parsed, 1), 5));
+                        setQuantity(
+                          Number.isNaN(parsed) ? 1 : Math.min(Math.max(parsed))
+                        );
                       }}
                       inputMode="numeric"
                       className="w-full rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/90 transition focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 [appearance:textfield] [::-webkit-inner-spin-button]:appearance-none [::-webkit-outer-spin-button]:appearance-none"
@@ -369,7 +439,9 @@ export default function OrderPage() {
                 </div>
 
                 <div className="space-y-4">
-                  <span className="text-sm font-medium text-white/80">Shipping speed</span>
+                  <span className="text-sm font-medium text-white/80">
+                    Shipping speed
+                  </span>
                   <div className="grid gap-3">
                     {shippingOptions.map((option) => (
                       <label
@@ -382,12 +454,18 @@ export default function OrderPage() {
                             name="shipping"
                             value={option.id}
                             checked={shipping === option.id}
-                            onChange={(event) => setShipping(event.target.value)}
+                            onChange={(event) =>
+                              setShipping(event.target.value)
+                            }
                             className="size-4 rounded-full border-white/40 bg-black"
                           />
                           <div>
-                            <p className="font-medium text-white">{option.label}</p>
-                            <p className="text-xs text-white/60">{option.eta}</p>
+                            <p className="font-medium text-white">
+                              {option.label}
+                            </p>
+                            <p className="text-xs text-white/60">
+                              {option.eta}
+                            </p>
                           </div>
                         </div>
                         <span className="text-sm font-semibold text-white/80">
@@ -414,8 +492,8 @@ export default function OrderPage() {
             </CardContent>
             <CardFooter>
               <p className="text-xs text-white/50">
-                Your payment details are encrypted and processed securely. By placing this order you
-                agree to the Audionix terms of sale.
+                Your payment details are encrypted and processed securely. By
+                placing this order you agree to the Audionix terms of sale.
               </p>
             </CardFooter>
           </Card>
