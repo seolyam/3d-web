@@ -58,15 +58,16 @@ export function Hero({
   const { ref: titleRef } = useRepeatingScrollAnimation();
   const { ref: subtitleRef } = useRepeatingScrollAnimation();
   const { ref: descriptionRef } = useRepeatingScrollAnimation();
-  const { ref: modelRef, isInView: modelInView } = useRepeatingScrollAnimation();
-  
+  const { ref: modelRef, isInView: modelInView } =
+    useRepeatingScrollAnimation();
+
   // Notify parent when the model visibility changes
   useEffect(() => {
     if (onModelVisibilityChange) {
       onModelVisibilityChange(!!modelInView);
     }
   }, [modelInView, onModelVisibilityChange]);
-  
+
   const { ref: equalizerRef } = useRepeatingScrollAnimation();
 
   const gradient1X = useMotionValue(30);
@@ -142,7 +143,7 @@ export function Hero({
   return (
     <section
       id="hero"
-      className="relative h-screen flex flex-col items-center justify-center pt-40"
+      className="relative h-screen flex flex-col items-center justify-center pt-60 "
     >
       <motion.div
         className="pointer-events-none absolute inset-0 transition-[background-position] duration-200"

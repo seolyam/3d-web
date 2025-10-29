@@ -15,6 +15,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 
 const shippingOptions = [
   { id: "standard", label: "Standard Shipping", eta: "3–5 business days", cost: 0 },
@@ -29,6 +30,7 @@ const colors = [
 
 export default function OrderPage() {
   const [shipping, setShipping] = useState("standard");
+  const [finish, setFinish] = useState("black");
   const [quantity, setQuantity] = useState(1);
   const [orderStatus, setOrderStatus] = useState<"idle" | "success">("idle");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -38,6 +40,11 @@ export default function OrderPage() {
     const selected = shippingOptions.find((option) => option.id === shipping);
     return selected?.cost ?? 0;
   }, [shipping]);
+
+  const selectedFinish = useMemo(
+    () => colors.find((color) => color.id === finish) ?? colors[0],
+    [finish]
+  );
 
   const subtotal = 399 * quantity;
   const total = subtotal + shippingCost;
@@ -122,6 +129,9 @@ export default function OrderPage() {
                   <p className="text-lg font-medium text-white">Audionix WH‑1000XM5</p>
                   <p className="text-sm text-white/60">
                     Adaptive noise canceling, Hi‑Res Audio + LDAC, 30mm precision drivers.
+                  </p>
+                  <p className="text-xs uppercase tracking-[0.25em] text-white/40">
+                    Finish · <span className="text-white/80 tracking-normal">{selectedFinish.label}</span>
                   </p>
                   <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-white/50 md:justify-start">
                     <Badge className="border-white/10 bg-white/10 text-white/70">Edge-AI Upscaling</Badge>
@@ -311,13 +321,18 @@ export default function OrderPage() {
                       {colors.map((color) => (
                         <label
                           key={color.id}
-                          className="flex flex-1 min-w-[140px] items-center gap-3 rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/80 transition hover:border-white/30"
+                          className={cn(
+                            "flex min-w-[140px] flex-1 cursor-pointer items-center gap-3 rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/80 transition hover:border-white/30 focus-within:border-white/40 focus-within:ring-2 focus-within:ring-white/40",
+                            finish === color.id && "border-white/40 bg-white/10 text-white"
+                          )}
                         >
                           <input
                             type="radio"
+                            id={`finish-${color.id}`}
                             name="color"
                             value={color.id}
-                            defaultChecked={color.id === "black"}
+                            checked={finish === color.id}
+                            onChange={() => setFinish(color.id)}
                             className="sr-only"
                           />
                           <span
