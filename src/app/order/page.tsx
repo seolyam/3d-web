@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,7 +13,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const shippingOptions = [
   { id: "standard", label: "Standard Shipping", eta: "3–5 business days", cost: 0 },
@@ -28,6 +30,9 @@ const colors = [
 export default function OrderPage() {
   const [shipping, setShipping] = useState("standard");
   const [quantity, setQuantity] = useState(1);
+  const [orderStatus, setOrderStatus] = useState<"idle" | "success">("idle");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const shippingCost = useMemo(() => {
     const selected = shippingOptions.find((option) => option.id === shipping);
@@ -36,6 +41,35 @@ export default function OrderPage() {
 
   const subtotal = 399 * quantity;
   const total = subtotal + shippingCost;
+
+  useEffect(() => {
+    return () => {
+      if (submitTimeoutRef.current) {
+        clearTimeout(submitTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSubmitting) {
+      return;
+    }
+
+    if (submitTimeoutRef.current) {
+      clearTimeout(submitTimeoutRef.current);
+      submitTimeoutRef.current = null;
+    }
+
+    setIsSubmitting(true);
+    setOrderStatus("idle");
+
+    submitTimeoutRef.current = setTimeout(() => {
+      setOrderStatus("success");
+      setIsSubmitting(false);
+      submitTimeoutRef.current = null;
+    }, 900);
+  };
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-black text-white">
@@ -75,16 +109,24 @@ export default function OrderPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex flex-col gap-4 rounded-xl border border-white/10 bg-black/40 p-5 md:flex-row md:items-center md:gap-6">
-                <div className="h-20 w-20 flex-shrink-0 rounded-xl border border-white/10 bg-gradient-to-br from-white/10 via-white/5 to-white/10 shadow-lg" />
-                <div className="space-y-2">
-                  <p className="text-lg font-medium">Audionix WH‑1000XM5</p>
+                <div className="relative mx-auto h-28 w-28 flex-shrink-0 overflow-hidden rounded-2xl border border-white/10 bg-black/60 shadow-[0_12px_35px_rgba(17,24,39,0.6)] md:mx-0 md:h-32 md:w-32">
+                  <Image
+                    src="/images/xm5.avif"
+                    alt="Audionix WH-1000XM5 headphones"
+                    fill
+                    priority
+                    className="object-cover object-center"
+                  />
+                </div>
+                <div className="space-y-2 text-center md:text-left">
+                  <p className="text-lg font-medium text-white">Audionix WH‑1000XM5</p>
                   <p className="text-sm text-white/60">
                     Adaptive noise canceling, Hi‑Res Audio + LDAC, 30mm precision drivers.
                   </p>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-white/50">
-                    <Badge className="bg-white/10 text-white/70 border-white/10">Edge-AI Upscaling</Badge>
-                    <Badge className="bg-white/10 text-white/70 border-white/10">30 hr battery</Badge>
-                    <Badge className="bg-white/10 text-white/70 border-white/10">Ambient Sound</Badge>
+                  <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-white/50 md:justify-start">
+                    <Badge className="border-white/10 bg-white/10 text-white/70">Edge-AI Upscaling</Badge>
+                    <Badge className="border-white/10 bg-white/10 text-white/70">30 hr battery</Badge>
+                    <Badge className="border-white/10 bg-white/10 text-white/70">Ambient Sound</Badge>
                   </div>
                 </div>
               </div>
@@ -149,7 +191,27 @@ export default function OrderPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form className="space-y-6">
+              <AnimatePresence mode="wait">
+                {orderStatus === "success" && (
+                  <motion.div
+                    key="order-success"
+                    initial={{ opacity: 0, y: -12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="mb-6 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200 shadow-[0_0_25px_rgba(16,185,129,0.2)]"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    <p className="font-medium text-emerald-100">Order placed successfully!</p>
+                    <p className="text-xs text-emerald-200/80">
+                      We&apos;ll send a confirmation email with tracking details as soon as it ships.
+                    </p>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid gap-5 md:grid-cols-2">
                   <div className="space-y-2">
                     <label htmlFor="first-name" className="text-sm font-medium text-white/80">
@@ -245,11 +307,11 @@ export default function OrderPage() {
                 <div className="grid gap-5 md:grid-cols-2">
                   <div className="space-y-3">
                     <span className="text-sm font-medium text-white/80">Finish</span>
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-3">
                       {colors.map((color) => (
                         <label
                           key={color.id}
-                          className="flex items-center gap-3 rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/80 transition hover:border-white/30"
+                          className="flex flex-1 min-w-[140px] items-center gap-3 rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/80 transition hover:border-white/30"
                         >
                           <input
                             type="radio"
@@ -277,6 +339,7 @@ export default function OrderPage() {
                       id="quantity"
                       name="quantity"
                       type="number"
+                      step={1}
                       min={1}
                       max={5}
                       value={quantity}
@@ -284,7 +347,8 @@ export default function OrderPage() {
                         const parsed = Number(event.target.value);
                         setQuantity(Number.isNaN(parsed) ? 1 : Math.min(Math.max(parsed, 1), 5));
                       }}
-                      className="w-full rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/90 transition focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                      inputMode="numeric"
+                      className="w-full rounded-lg border border-white/15 bg-black/50 px-4 py-3 text-sm text-white/90 transition focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/30 [appearance:textfield] [::-webkit-inner-spin-button]:appearance-none [::-webkit-outer-spin-button]:appearance-none"
                     />
                   </div>
                 </div>
@@ -319,8 +383,17 @@ export default function OrderPage() {
                   </div>
                 </div>
 
-                <Button type="submit" size="lg" className="w-full rounded-full px-7 py-6">
-                  Place Order
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full rounded-full px-7 py-6"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting
+                    ? "Processing..."
+                    : orderStatus === "success"
+                    ? "Order Placed"
+                    : "Place Order"}
                 </Button>
               </form>
             </CardContent>
